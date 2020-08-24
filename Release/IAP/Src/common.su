@@ -1,0 +1,4 @@
+common.c:56:6:Int2Str	20	static
+common.c:84:10:Str2Int	16	static
+common.c:175:10:FLASH_PagesMask	8	static
+common.c:191:9:EraseSomePages	40	static

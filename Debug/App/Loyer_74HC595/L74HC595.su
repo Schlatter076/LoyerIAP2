@@ -1,0 +1,2 @@
+L74HC595.c:9:6:Init_74HC595	16	static
+L74HC595.c:32:6:HC595_Send_Byte	24	static

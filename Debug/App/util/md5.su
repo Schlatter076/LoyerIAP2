@@ -1,0 +1,7 @@
+md5.c:18:6:MD5Init	16	static
+md5.c:27:6:MD5Update	40	static
+md5.c:51:6:MD5Final	32	static
+md5.c:62:6:MD5Encode	32	static
+md5.c:75:6:MD5Decode	32	static
+md5.c:86:6:MD5Transform	288	static
+md5.c:170:6:getMD5Str	136	static

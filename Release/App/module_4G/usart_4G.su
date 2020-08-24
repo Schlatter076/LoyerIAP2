@@ -1,0 +1,12 @@
+usart_4G.c:12:6:USART2_Init	48	static
+usart_4G.c:98:6:USART2_IRQHandler	16	static
+usart_4G.c:143:6:reset_4G_module	8	static
+usart_4G.c:158:6:split	16	static
+usart_4G.c:186:6:Send_AT_Cmd	24	static
+usart_4G.c:216:4:F4G_AT_Test	8	static
+usart_4G.c:238:6:connectToTCPServer	120	static
+usart_4G.c:250:6:F4G_sendStr	144	static
+usart_4G.c:273:6:F4G_ExitUnvarnishSend	8	static
+usart_4G.c:283:6:getModuleMes	16	static
+usart_4G.c:54:6:F4G_Init	24	static
+usart_4G.c:347:6:request2Server	8	static
