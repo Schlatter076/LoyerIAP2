@@ -73,18 +73,18 @@ void F4G_Init(u32 bound)
 			PKEY_4G_Pin_SetH;
 			delay_ms(1000);
 			delay_ms(1000);
-			delay_ms(1000);
+			//delay_ms(1000);
 			//delay_ms(1000);
 			PKEY_4G_Pin_SetL;
 			//复位4G模块
 			RST_4G_Pin_SetH;
 			delay_ms(1100);
 			RST_4G_Pin_SetL;
-			delay_ms(500);
+//			delay_ms(500);
 
 			F4G_ExitUnvarnishSend();
 			Send_AT_Cmd("AT+CIPCLOSE", "OK", NULL, 500);
-			Send_AT_Cmd("AT+RSTSET", "OK", NULL, 500);
+			//Send_AT_Cmd("AT+RSTSET", "OK", NULL, 500);
 		} while (!F4G_AT_Test());
 
 		//填充好相关信息
@@ -102,16 +102,16 @@ void USART2_IRQHandler(void)
 	{
 		ucCh = USART_ReceiveData( USART2);
 
-		if (F4G_Fram_Record_Struct.InfBit.FramLength >= RX4G_BUF_MAX_LEN)
+		if (F4G_Fram_Record_Struct.InfBit.FramLength < (RX4G_BUF_MAX_LEN - 1))
+		{
+			F4G_Fram_Record_Struct.Data_RX_BUF[F4G_Fram_Record_Struct.InfBit.FramLength++] =
+					ucCh;
+		}
+		else
 		{
 			printf("4G Cmd size over.\r\n");
 			memset(F4G_Fram_Record_Struct.Data_RX_BUF, 0, RX4G_BUF_MAX_LEN);
 			F4G_Fram_Record_Struct.InfBit.FramLength = 0;
-		}
-		if (F4G_Fram_Record_Struct.InfBit.FramFinishFlag == 0)
-		{
-			F4G_Fram_Record_Struct.Data_RX_BUF[F4G_Fram_Record_Struct.InfBit.FramLength++] =
-					ucCh;
 		}
 		//收到服务器端发回的数据
 		if (ucCh == ']'
@@ -216,7 +216,7 @@ bool Send_AT_Cmd(char *cmd, char *ack1, char *ack2, u32 time)
 u8 F4G_AT_Test(void)
 {
 	char count = 0;
-	while (count < 10)
+	while (count < 5)
 	{
 		Send_AT_Cmd("AT", "OK", NULL, 500);
 		++count;
@@ -284,25 +284,31 @@ void getModuleMes(void)
 {
 	char *result = NULL;
 	u8 inx = 0;
-	while (!Send_AT_Cmd("AT+SAPBR=3,1,\"CONTYPE\",\"GPRS\"", "OK", NULL, 500))
-		;
-	while (!Send_AT_Cmd("AT+SAPBR=3,1,\"APN\",\"\"", "OK", NULL, 500))
-		;
-	while (!Send_AT_Cmd("AT+SAPBR=1,1", "OK", NULL, 500))
-		;
-	while (!Send_AT_Cmd("AT+SAPBR=2,1", "OK", NULL, 500))
-		;
-	//AT+CIPGSMLOC=1,1  获取经纬度和时间
+//	Send_AT_Cmd("AT+SAPBR=0,1", "OK", NULL, 500); //去激活
+//
+//	while (!Send_AT_Cmd("AT+SAPBR=3,1,\"CONTYPE\",\"GPRS\"", "OK", NULL, 500))
+//		;
+//	while (!Send_AT_Cmd("AT+SAPBR=3,1,\"APN\",\"\"", "OK", NULL, 500))
+//		;
+//	while (!Send_AT_Cmd("AT+SAPBR=1,1", "OK", NULL, 500))
+//		;
+////	while (!Send_AT_Cmd("AT+SAPBR=2,1", "OK", NULL, 500))
+////		;
+//	//AT + CIPGSMLOC = 1, 1
+//	//获取经纬度和时间
 	while (!Send_AT_Cmd("AT+CIPGSMLOC=1,1", "OK", NULL, 500))
 		;
-	result = strtok(F4G_Fram_Record_Struct.Data_RX_BUF, ",");
-	result = strtok( NULL, ",");
-	result = strtok( NULL, ",");
-	strcpy(F4G_Fram_Record_Struct.locations[0], result);
-	printf("longitude is \"%s\"\n", F4G_Fram_Record_Struct.locations[0]);
-	result = strtok( NULL, ",");
-	strcpy(F4G_Fram_Record_Struct.locations[1], result);
-	printf("latitude is \"%s\"\n", F4G_Fram_Record_Struct.locations[1]);
+//	result = strtok(F4G_Fram_Record_Struct.Data_RX_BUF, ",");
+//	result = strtok( NULL, ",");
+//	result = strtok( NULL, ",");
+//	strcpy(F4G_Fram_Record_Struct.locations[0], result);
+//	printf("longitude is \"%s\"\n", F4G_Fram_Record_Struct.locations[0]);
+//	result = strtok( NULL, ",");
+//	strcpy(F4G_Fram_Record_Struct.locations[1], result);
+//	printf("latitude is \"%s\"\n", F4G_Fram_Record_Struct.locations[1]);
+
+	strcpy(F4G_Fram_Record_Struct.locations[0], "0");
+	strcpy(F4G_Fram_Record_Struct.locations[1], "0");
 
 	//获取物联网卡号
 	while (!Send_AT_Cmd("AT+CCID", "OK", NULL, 500))
@@ -322,8 +328,9 @@ void getModuleMes(void)
 		result++;
 	}
 	printf("CCID=%s\r\n", F4G_Fram_Record_Struct.ccid);
+
 	//获取模块网络信息
-	while (!Send_AT_Cmd("AT+COPS=3,1", "OK", NULL, 500))
+	while (!Send_AT_Cmd("AT+COPS=0,1", "OK", NULL, 1000))
 		;
 	while (!Send_AT_Cmd("AT+COPS?", "OK", NULL, 500))
 		;
@@ -340,6 +347,26 @@ void getModuleMes(void)
 		F4G_Fram_Record_Struct.cops = '9';
 	}
 	printf("COPS is \"%c\"\n", F4G_Fram_Record_Struct.cops);
+	//暂时将联通APN配死
+	if (F4G_Fram_Record_Struct.cops == '3')
+	{
+		while (!Send_AT_Cmd("AT+CPNETAPN=1,cmiot,\"\",\"\",0", "OK",
+		NULL, 1800))
+			;
+	}
+	else if (F4G_Fram_Record_Struct.cops == '6')
+	{
+		while (!Send_AT_Cmd("AT+CPNETAPN=1,UNIM2M.NJM2MAPN,\"\",\"\",0", "OK",
+		NULL, 1800))
+			;
+	}
+	else if (F4G_Fram_Record_Struct.cops == '9')
+	{
+		while (!Send_AT_Cmd("AT+CPNETAPN=1,CTNET,\"\",\"\",0", "OK",
+		NULL, 1800))
+			;
+	}
+	delay_ms(1000); //强制等待1S
 }
 /**
  * 向服务器发起请求

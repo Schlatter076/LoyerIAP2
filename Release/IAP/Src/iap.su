@@ -10,10 +10,10 @@ iap.c:181:10:IAP_ReadFlag	0	static
 iap.c:187:6:IAP_USART_Init	8	static
 iap.c:192:6:IAP_Init	8	static
 iap.c:204:4:IAP_RunApp	8	static
-iap.c:284:4:check_response	16	static
-iap.c:227:6:IAP_Main_Menu	24	static
-iap.c:674:8:IAP_Upload	8	static
-iap.c:681:8:IAP_Erase	16	static
-iap.c:351:8:IAP_Update	128	static
-iap.c:692:4:Set_DeviceID	16	static
-iap.c:716:6:Get_DeviceID	8	static
+iap.c:290:4:check_response	16	static
+iap.c:227:6:IAP_Main_Menu	32	static
+iap.c:680:8:IAP_Upload	8	static
+iap.c:687:8:IAP_Erase	16	static
+iap.c:357:8:IAP_Update	128	static
+iap.c:698:4:Set_DeviceID	16	static
+iap.c:722:6:Get_DeviceID	8	static

@@ -251,13 +251,19 @@ void IAP_Main_Menu(void)
 		FlashProtection = 0;
 	}
 	printf("Now enter the main menu!\r\n");
+	u8 iapREQ_cnt = 0;
 	while (1)
 	{
 		if (FlashProtection != 0) //There is write protected
 		{
 			printf("diswp\r\n");
 		}
+		if(iapREQ_cnt >= 3)
+		{
+			NVIC_SystemReset();
+		}
 		request(REQ_REGISTER, 0xFF);
+		iapREQ_cnt++;
 		delay_ms(500);
 		if (F4G_Fram_Record_Struct.InfBit.FramFinishFlag)
 		{
