@@ -1,3 +1,0 @@
-usart.c:19:6:USART1_Init	40	static
-usart.c:68:6:USART1_IRQHandler	16	static
-usart.c:112:6:UT_split	16	static

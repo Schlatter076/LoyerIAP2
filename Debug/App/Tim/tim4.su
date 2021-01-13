@@ -1,3 +1,0 @@
-tim4.c:13:6:Init_led	16	static
-tim4.c:39:6:TIM4_Init	32	static
-tim4.c:73:6:TIM4_IRQHandler	8	static
